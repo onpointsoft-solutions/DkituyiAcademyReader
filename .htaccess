@@ -1,0 +1,120 @@
+# Backend Django .htaccess Configuration
+# Place this in /home/vincent/Projects/bookreader/backend/.htaccess
+
+# Enable rewrite engine
+RewriteEngine On
+
+# Security headers
+<IfModule mod_headers.c>
+    # CORS headers for API access
+    Header always set Access-Control-Allow-Origin "http://localhost:3000"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+    Header always set Access-Control-Allow-Credentials "true"
+    
+    # Security headers
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://dkituyiacademy.org"
+</IfModule>
+
+# Handle preflight OPTIONS requests
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ [R=200,L]
+
+# Django API routing
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/(.*)$ /backend/$1 [QSA,L]
+
+# WordPress JWT proxy (optional - if you want to proxy through Django)
+RewriteCond %{REQUEST_URI} ^/wp-json/jwt-auth/v1/token
+RewriteRule ^(.*)$ https://dkituyiacademy.org/$1 [P,L]
+
+# Media files serving
+<IfModule mod_mime.c>
+    # PDF files
+    AddType application/pdf .pdf
+    # Image files
+    AddType image/jpeg .jpg .jpeg
+    AddType image/png .png
+    AddType image/gif .gif
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+</IfModule>
+
+# Gzip compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Cache control for static files
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# Error handling
+ErrorDocument 401 /backend/error-pages/401.html
+ErrorDocument 403 /backend/error-pages/403.html
+ErrorDocument 404 /backend/error-pages/404.html
+ErrorDocument 500 /backend/error-pages/500.html
+
+# PHP settings (if PHP is used)
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value error_log /var/log/django-backend-errors.log
+    php_value max_execution_time 300
+    php_value memory_limit 256M
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+</IfModule>
+
+<IfModule mod_php8.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value error_log /var/log/django-backend-errors.log
+    php_value max_execution_time 300
+    php_value memory_limit 256M
+    php_value upload_max_filesize 50M
+    php_value post_max_size 50M
+</IfModule>
+
+# Block access to sensitive files
+<Files ~ "^\.">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<FilesMatch "\.(env|log|pyc|pyo|py)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<IfModule mod_authz_core.c>
+    <Directory /home/vincent/Projects/bookreader/backend>
+        Require all granted
+    </Directory>
+</IfModule>

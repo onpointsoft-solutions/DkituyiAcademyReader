@@ -1,0 +1,79 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<h2>Subscription Confirmed! 🎉</h2>
+
+<p>Dear Reader,</p>
+
+<p>Congratulations! Your subscription to <strong>dkituyi academy</strong> has been successfully activated. Welcome to the premium African reading experience!</p>
+
+<div class="highlight">
+    <strong>🌟 Welcome to Premium African Literature Access!</strong>
+</div>
+
+<div class="book-info">
+    <h3>📋 Subscription Details</h3>
+    <p><strong>Plan:</strong> {{ plan_name }}</p>
+    <p><strong>Amount:</strong> ${{ amount }}</p>
+    <p><strong>Start Date:</strong> {{ start_date }}</p>
+    <p><strong>End Date:</strong> {{ end_date }}</p>
+</div>
+
+<p><strong>What's now included in your premium membership:</strong></p>
+
+<ul>
+    <li>📚 <strong>Unlimited African Books</strong> - Access our entire collection without limits</li>
+    <li>🎯 <strong>Exclusive Content</strong> - Premium African authors and rare manuscripts</li>
+    <li>💻 <strong>Offline Reading</strong> - Download books for offline enjoyment</li>
+    <li>🎧 <strong>Audiobook Access</strong> - Listen to African stories while on the go</li>
+    <li>🤝 <strong>Priority Support</strong> - Get help when you need it most</li>
+    <li>📖 <strong>Early Access</strong> - Be the first to read new African releases</li>
+</ul>
+
+<p><strong>Your Premium Benefits:</strong></p>
+
+<div class="book-info">
+    <h3>🌍 Premium African Literary Experience</h3>
+    <p>With your premium subscription, you're not just getting access to books - you're investing in the preservation and celebration of African literature. Your support helps us:</p>
+    <ul>
+        <li>Partner with African authors and publishers</li>
+        <li>Digitize rare African manuscripts</li>
+        <li>Support emerging African writers</li>
+        <li>Maintain our high-quality curated collection</li>
+    </ul>
+</div>
+
+<p><strong>Getting Started with Premium:</strong></p>
+
+<ol>
+    <li>📚 Browse our premium African book collection</li>
+    <li>💾 Download your favorite books for offline reading</li>
+    <li>🎧 Explore our growing audiobook library</li>
+    <li>🤝 Join premium member discussions and book clubs</li>
+    <li>📈 Track your reading progress and earn achievements</li>
+</ol>
+
+<a href="{{ dashboard_url | default:'#' }}" class="button">Access Premium Library</a>
+
+<p><strong>Managing Your Subscription:</strong></p>
+
+<p>You can manage your subscription, update payment methods, or view your reading history anytime in your account dashboard. If you have any questions about your premium membership, our support team is here to help.</p>
+
+<p><strong>Thank you for supporting African literature!</strong></p>
+
+<p>Your subscription doesn't just give you access to great books - it supports African authors, preserves cultural heritage, and helps us continue our mission of making African literature accessible to readers worldwide.</p>
+
+<p>Happy premium reading!</p>
+
+<p><strong>The dkituyi academy Team</strong><br>
+<small>Celebrating African Literature & Digital Reading</small></p>
+
+<hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+
+<p style="font-size: 14px; color: #6c757d;">
+    <small>
+        You can manage your subscription preferences in your account settings. 
+        Questions? Contact us at premium@dkituyiacademy.com
+    </small>
+</p>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<h2>New African Book Available! 📚</h2>
+
+<p>Dear Reader,</p>
+
+<p>We're excited to announce that a new book has been added to our African literature collection at <strong>dkituyi academy</strong>!</p>
+
+<div class="book-info">
+    <h3>📖 {{ book_title }}</h3>
+    <p><strong>Author:</strong> {{ author_name|default:"African Author" }}</p>
+    {% if book_description %}
+    <p><strong>Description:</strong> {{ book_description }}</p>
+    {% endif %}
+</div>
+
+<div class="highlight">
+    <strong>🌍 Expand Your African Literary Horizons!</strong>
+</div>
+
+<p>This new addition to our collection represents our ongoing commitment to bringing you the best in African literature. Whether it's contemporary fiction, historical narratives, or cultural insights, each book is selected to enrich your understanding of African storytelling.</p>
+
+<p><strong>What makes this book special:</strong></p>
+
+<ul>
+    <li>📚 <strong>Authentic African Voice</strong> - Written by African authors with genuine cultural insights</li>
+    <li>🎯 <strong>Carefully Curated</strong> - Selected by our literary experts for quality and relevance</li>
+    <li>💻 <strong>Digital Format</strong> - Read instantly on any device with our ebook platform</li>
+    <li>🤝 <strong>Community Ready</strong> - Join discussions with other readers about this book</li>
+</ul>
+
+<p>At dkituyi academy, we believe that African literature has the power to bridge cultures, preserve heritage, and inspire future generations. This new book is part of our mission to make African stories accessible to readers worldwide.</p>
+
+<a href="{{ book_url | default:'#' }}" class="button">Read This Book Now</a>
+
+<p><strong>Don't miss out!</strong></p>
+<p>New books are added regularly to our collection. Be sure to check back often or enable notifications to stay updated on the latest African literary works.</p>
+
+<p>Happy reading!</p>
+
+<p><strong>The dkituyi academy Team</strong><br>
+<small>Celebrating African Literature & Digital Reading</small></p>
+
+<hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+
+<p style="font-size: 14px; color: #6c757d;">
+    <small>
+        You received this email because you're a valued member of dkituyi academy. 
+        To manage your email preferences, visit your account settings.
+    </small>
+</p>
+{% endblock %}

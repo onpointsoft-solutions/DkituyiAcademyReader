@@ -1,0 +1,73 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<h2>🚨 Admin Notification</h2>
+
+<p>Dear Administrator,</p>
+
+<p>This is an automated notification from <strong>dkituyi academy</strong> regarding important system activity.</p>
+
+<div class="highlight">
+    <strong>⚠️ {{ subject }}</strong>
+</div>
+
+<div class="book-info">
+    <h3>📋 Notification Details</h3>
+    <p>{{ message|linebreaks }}</p>
+    <p><strong>Timestamp:</strong> {% now "Y-m-d H:i:s" %}</p>
+    <p><strong>System:</strong> dkituyi academy Backend</p>
+</div>
+
+<p><strong>Recommended Actions:</strong></p>
+
+<ul>
+    <li>🔍 Review the system logs for additional context</li>
+    <li>👥 Check user activity if this involves user accounts</li>
+    <li>📊 Monitor system performance and user engagement</li>
+    <li>🛡️ Verify data integrity if this involves database changes</li>
+</ul>
+
+<p><strong>Quick Access Links:</strong></p>
+
+<ul>
+    <li>📊 <a href="{{ admin_url | default:'#' }}">Admin Dashboard</a></li>
+    <li>👥 <a href="{{ users_url | default:'#' }}">User Management</a></li>
+    <li>📚 <a href="{{ books_url | default:'#' }}">Book Management</a></li>
+    <li>📈 <a href="{{ reports_url | default:'#' }}">System Reports</a></li>
+</ul>
+
+<p><strong>About dkituyi academy:</strong></p>
+<p>As an administrator of our digital reading platform, you play a crucial role in maintaining the quality and integrity of our digital library. Your attention to these notifications helps ensure the best possible experience for our readers.</p>
+
+<div class="book-info">
+    <h3>🎯 Our Mission</h3>
+    <p>dkituyi academy is dedicated to celebrating and preserving great literature through modern technology. Your administrative work directly supports our mission of making quality stories accessible to readers worldwide.</p>
+</div>
+
+<p><strong>System Health Status:</strong></p>
+
+<ul>
+    <li>✅ <strong>Database:</strong> Operational</li>
+    <li>✅ <strong>Email Service:</strong> Operational</li>
+    <li>✅ <strong>File Storage:</strong> Operational</li>
+    <li>✅ <strong>Payment Processing:</strong> Operational</li>
+</ul>
+
+<p><strong>Need Assistance?</strong></p>
+
+<p>If you require technical support or have questions about this notification, please contact the development team or consult the admin documentation.</p>
+
+<p>Thank you for your dedication to maintaining excellence at dkituyi academy!</p>
+
+<p><strong>The dkituyi academy System</strong><br>
+<small>Automated Admin Notification System</small></p>
+
+<hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+
+<p style="font-size: 14px; color: #6c757d;">
+    <small>
+        This is an automated message from the dkituyi academy backend system. 
+        Please do not reply to this email directly.
+    </small>
+</p>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<h2>Welcome to Your Digital Reading Journey! 📚</h2>
+
+<p>Dear {{ user_name|default:"Reader" }},</p>
+
+<p>We are absolutely delighted to welcome you to <strong>dkituyi academy</strong> - your premier destination for great literature and digital reading excellence!</p>
+
+<div class="highlight">
+    <strong>🎉 Your journey into the rich world of great stories begins now!</strong>
+</div>
+
+<p>As a member of our reading community, you now have access to:</p>
+
+<ul>
+    <li>📚 <strong>Curated Literature Collection</strong> - Discover amazing stories and great books</li>
+    <li>💻 <strong>Modern Digital Reading Experience</strong> - Read anytime, anywhere on any device</li>
+    <li>🌟 <strong>Premium Content</strong> - Access to exclusive authors and rare manuscripts</li>
+    <li>🤝 <strong>Vibrant Reading Community</strong> - Connect with fellow literature enthusiasts</li>
+</ul>
+
+<div class="book-info">
+    <h3>📖 Getting Started</h3>
+    <p>1. Browse our extensive collection of great books</p>
+    <p>2. Create your personal reading library</p>
+    <p>3. Track your reading progress</p>
+    <p>4. Join discussions about your favorite authors</p>
+</div>
+
+<p>Our platform celebrates great literature from around the world, featuring diverse voices and compelling stories. Each book in our collection is carefully selected to provide readers with meaningful and enriching experiences.</p>
+
+<p><strong>Why dkituyi academy?</strong></p>
+<p>We believe great literature deserves a dedicated platform that honors its past, celebrates its present, and nurtures its future. Our academy is committed to preserving and sharing knowledge through modern technology.</p>
+
+<a href="{{ login_url | default:'#' }}" class="button">Start Reading Now</a>
+
+<p>If you have any questions or need assistance getting started, our support team is here to help you every step of the way.</p>
+
+<p>Happy reading!</p>
+
+<p><strong>The dkituyi academy Team</strong><br>
+<small>Celebrating Great Literature & Digital Reading</small></p>
+{% endblock %}
