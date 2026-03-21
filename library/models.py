@@ -61,7 +61,7 @@ class ReadingProgress(models.Model):
 class ReadingSession(models.Model):
     """Model to track individual reading sessions"""
     user_id = models.PositiveIntegerField()  # WordPress user ID
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reading_sessions')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='library_reading_sessions')
     start_page = models.PositiveIntegerField()
     end_page = models.PositiveIntegerField()
     start_time = models.DateTimeField()

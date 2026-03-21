@@ -13,7 +13,7 @@ class BookViewSet(viewsets.ReadOnlyModelViewSet):
     ViewSet for viewing books
     """
     queryset = Book.objects.all()
-    permission_classes = []  # Allow public access to books list
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['categories', 'author', 'language']
     search_fields = ['title', 'subtitle', 'description', 'author__name']

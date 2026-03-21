@@ -16,7 +16,7 @@ class JWTAuthMiddleware(MiddlewareMixin):
     
     def process_request(self, request):
         # Skip authentication for certain paths
-        skip_paths = ['/admin/', '/api/auth/login/', '/api/auth/register/', '/api/auth/logout/', '/api/auth/me/', '/api/auth/wordpress-login/']
+        skip_paths = ['/admin/', '/api/auth/login/', '/api/auth/register/', '/api/auth/logout/', '/api/auth/me/', '/api/auth/wordpress-login/', '/api/reader/features/', '/api/reader/features/start_reading_session/', '/api/reader/features/get_annotations/', '/api/reader/features/add_bookmark/', '/api/reader/features/add_highlight/', '/api/reader/features/add_note/', '/api/reader/features/update_highlight/', '/api/reader/features/update_note/', '/api/reader/features/delete_bookmark/', '/api/reader/features/delete_highlight/', '/api/reader/features/delete_note/', '/api/reader/features/end_reading_session/', '/api/reader/features/report_screenshot_attempt/', '/api/reader/pdf/', '/api/reader/pdf/update_progress/']
         if any(request.path.startswith(path) for path in skip_paths):
             return None
             

@@ -9,9 +9,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+# Get allowed hosts from environment or use default with production domain
+env_hosts = config('ALLOWED_HOSTS', default='', cast=str)
+print(f"DEBUG: env_hosts = '{env_hosts}'")
+if env_hosts:
+    ALLOWED_HOSTS = [s.strip() for s in env_hosts.split(',')]
+    # Force add all hosts if environment doesn't include *
+    if '*' not in env_hosts:
+        ALLOWED_HOSTS.append('*')
+else:
+    # Allow all hosts for now
+    ALLOWED_HOSTS = ['*']
+print(f"DEBUG: ALLOWED_HOSTS = {ALLOWED_HOSTS}")
 
 # Application definition
 DJANGO_APPS = [
@@ -51,6 +62,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Temporarily disable CSRF for debugging
+CSRF_COOKIE_SECURE = False
+CSRF_USE_SESSIONS = False
 
 ROOT_URLCONF = 'bookreader.urls'
 
@@ -133,16 +148,19 @@ REST_FRAMEWORK = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,https://app.example.com',
+    default='http://localhost:3000,https://app.example.com,https://reader.dkituyiacademy.org',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
 # CSRF Settings for admin API
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='http://localhost:3000,https://app.example.com',
+    default='http://localhost:3000,https://app.example.com,https://reader.dkituyiacademy.org',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -210,6 +228,10 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True if not DEBUG else False
 SECURE_HSTS_PRELOAD = True if not DEBUG else False
+
+# Temporarily disable SSL security for development
+SECURE_SSL_REDIRECT = False
+SECURE_PROXY_SSL_HEADER = False
 
 # Session Settings
 SESSION_COOKIE_SECURE = not DEBUG
