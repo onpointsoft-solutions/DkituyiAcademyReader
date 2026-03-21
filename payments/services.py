@@ -89,7 +89,7 @@ class PaystackService:
         
         # If in simulation mode, simulate successful verification
         if self.simulation_mode:
-            print(f"🔍 DEBUG: SIMULATION MODE - Verifying transaction {reference}")
+            print(f"DEBUG: SIMULATION MODE - Verifying transaction {reference}")
             try:
                 paystack_payment = PaystackPayment.objects.get(reference=reference)
                 

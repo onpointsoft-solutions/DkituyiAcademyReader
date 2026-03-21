@@ -49,7 +49,7 @@ class JWTAuthMiddleware(MiddlewareMixin):
                 
                 # Debug logging
                 if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
-                    print(f"🔍 DEBUG: JWT decoded successfully: {payload}")
+                    print(f"DEBUG: JWT decoded successfully: {payload}")
                 
                 # Attach user payload to request
                 request.user_payload = payload
@@ -63,25 +63,25 @@ class JWTAuthMiddleware(MiddlewareMixin):
                 })()
                 
                 if request.path.startswith('/api/admin/'):
-                    print(f"🔍 DEBUG: JWT middleware set user object for admin endpoint")
-                    print(f"🔍 DEBUG: User object - id: {request.user.id}, email: {request.user.email}, authenticated: {request.user.is_authenticated}")
+                    print(f"DEBUG: JWT middleware set user object for admin endpoint")
+                    print(f"DEBUG: User object - id: {request.user.id}, email: {request.user.email}, authenticated: {request.user.is_authenticated}")
                 
             except jwt.ExpiredSignatureError:
                 if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
-                    print(f"🔍 DEBUG: JWT token expired")
+                    print(f"DEBUG: JWT token expired")
                 return JsonResponse({'error': 'Token has expired'}, status=401)
             except jwt.InvalidTokenError:
                 if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
-                    print(f"🔍 DEBUG: Invalid JWT token")
+                    print(f"DEBUG: Invalid JWT token")
                 return JsonResponse({'error': 'Invalid token'}, status=401)
             except Exception as e:
                 if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
-                    print(f"🔍 DEBUG: JWT decode error: {str(e)}")
+                    print(f"DEBUG: JWT decode error: {str(e)}")
                 return JsonResponse({'error': 'Authentication failed'}, status=401)
         else:
             # No token provided
             if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
-                print(f"🔍 DEBUG: No JWT token provided")
+                print(f"DEBUG: No JWT token provided")
             request.user_payload = None
             request.user = AnonymousUser()
             

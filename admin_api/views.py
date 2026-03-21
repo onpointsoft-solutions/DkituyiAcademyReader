@@ -137,37 +137,37 @@ class AdminBookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all().order_by('-created_at')
 
     def dispatch(self, request, *args, **kwargs):
-        print(f"🔍 DEBUG: AdminBookViewSet.dispatch called")
-        print(f"🔍 DEBUG: Request method: {request.method}")
-        print(f"🔍 DEBUG: Request path: {request.path}")
-        print(f"🔍 DEBUG: user_payload: {getattr(request, 'user_payload', None)}")
+        print(f"DEBUG: AdminBookViewSet.dispatch called")
+        print(f"DEBUG: Request method: {request.method}")
+        print(f"DEBUG: Request path: {request.path}")
+        print(f"DEBUG: user_payload: {getattr(request, 'user_payload', None)}")
         
         # Manual permission check for testing
         if hasattr(request, 'user_payload') and request.user_payload:
             user_id = request.user_payload.get('user_id')
-            if user_id:
-                from django.contrib.auth.models import User
-                try:
-                    user = User.objects.get(id=user_id)
-                    print(f"🔍 DEBUG: Manual check - User: {user.username}, is_staff: {user.is_staff}")
-                    if not (user.is_staff or user.is_superuser):
-                        print(f"🔍 DEBUG: Permission denied - user is not staff")
-                        return Response({'error': 'Staff access required'}, status=403)
-                    print(f"🔍 DEBUG: Permission check passed - proceeding with super().dispatch()")
-                except User.DoesNotExist:
-                    print(f"🔍 DEBUG: User.DoesNotExist for user_id: {user_id}")
-                    return Response({'error': 'User not found'}, status=403)
+            print(f"DEBUG: Checking user_id: {user_id}")
+            from django.contrib.auth.models import User
+            try:
+                user = User.objects.get(id=user_id)
+                print(f"DEBUG: Manual check - User: {user.username}, is_staff: {user.is_staff}")
+                if not (user.is_staff or user.is_superuser):
+                    print(f"DEBUG: Permission denied - user is not staff")
+                    return Response({'error': 'Staff access required'}, status=403)
+                print(f"DEBUG: Permission check passed - proceeding with super().dispatch()")
+            except User.DoesNotExist:
+                print(f"DEBUG: User.DoesNotExist for user_id: {user_id}")
+                return Response({'error': 'User not found'}, status=403)
         else:
-            print(f"🔍 DEBUG: No user_payload found - permission denied")
+            print(f"DEBUG: No user_payload found - permission denied")
             return Response({'error': 'Authentication required'}, status=401)
         
         try:
             response = super().dispatch(request, *args, **kwargs)
-            print(f"🔍 DEBUG: super().dispatch() completed successfully")
+            print(f"DEBUG: super().dispatch() completed successfully")
             return response
         except Exception as e:
-            print(f"🔍 DEBUG: Exception in super().dispatch(): {e}")
-            print(f"🔍 DEBUG: Exception type: {type(e)}")
+            print(f"DEBUG: Exception in super().dispatch(): {e}")
+            print(f"DEBUG: Exception type: {type(e)}")
             raise
 
     def get_serializer_class(self):
@@ -176,10 +176,10 @@ class AdminBookViewSet(viewsets.ModelViewSet):
         return AdminBookListSerializer
 
     def create(self, request, *args, **kwargs):
-        print(f"🔍 DEBUG: AdminBookViewSet.create called")
-        print(f"🔍 DEBUG: user_payload: {getattr(request, 'user_payload', None)}")
+        print(f"DEBUG: AdminBookViewSet.create called")
+        print(f"DEBUG: user_payload: {getattr(request, 'user_payload', None)}")
         if hasattr(request, 'user_payload') and request.user_payload:
-            print(f"🔍 DEBUG: Getting user_id: {request.user_payload.get('user_id')}")
+            print(f"DEBUG: Getting user_id: {request.user_payload.get('user_id')}")
         
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

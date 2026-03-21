@@ -36,7 +36,7 @@ class DjangoLoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         
-        print(f"🔍 DEBUG: Login attempt - Username: {username}")
+        print(f"DEBUG: Login attempt - Username: {username}")
         
         if not username or not password:
             return Response(
@@ -75,10 +75,10 @@ class DjangoLoginView(APIView):
                 'is_staff': user.is_staff,
             }
             
-            print(f"🔍 DEBUG: Login successful - User data: {user_data}")
-            print(f"🔍 DEBUG: Is SuperUser: {user.is_superuser}")
-            print(f"🔍 DEBUG: Is Staff: {user.is_staff}")
-            print(f"🔍 DEBUG: JWT Token generated: {jwt_token[:20]}...")
+            print(f"DEBUG: Login successful - User data: {user_data}")
+            print(f"DEBUG: Is SuperUser: {user.is_superuser}")
+            print(f"DEBUG: Is Staff: {user.is_staff}")
+            print(f"DEBUG: JWT Token generated: {jwt_token[:20]}...")
             
             return Response({
                 'message': 'Login successful',
@@ -86,7 +86,7 @@ class DjangoLoginView(APIView):
                 'token': jwt_token
             })
         else:
-            print(f"🔍 DEBUG: Login failed - Invalid credentials for {username}")
+            print(f"DEBUG: Login failed - Invalid credentials for {username}")
             return Response(
                 {'error': 'Invalid credentials'}, 
                 status=status.HTTP_401_UNAUTHORIZED

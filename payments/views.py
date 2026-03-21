@@ -109,7 +109,7 @@ class WalletViewSet(viewsets.ViewSet):
         reference = request.data.get('reference')
         simulation_mode = request.data.get('simulation_mode', False)
         
-        print(f"🔍 DEBUG: Payment verification request - reference: {reference}, simulation_mode: {simulation_mode}")
+        print(f"DEBUG: Payment verification request - reference: {reference}, simulation_mode: {simulation_mode}")
         
         if not reference:
             return Response(

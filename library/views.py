@@ -171,15 +171,15 @@ class UserLibraryViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
-        print(f"🔍 DEBUG: Getting library for user_id: {user_id}")
+        print(f"DEBUG: Getting library for user_id: {user_id}")
         
         # Check if user has any books in library
         library_count = UserLibrary.objects.filter(user_id=user_id).count()
-        print(f"🔍 DEBUG: User library count: {library_count}")
+        print(f"DEBUG: User library count: {library_count}")
         
         # If user has no books, add some sample books
         if library_count == 0:
-            print(f"🔍 DEBUG: Adding sample books to user library")
+            print(f"DEBUG: Adding sample books to user library")
             try:
                 # Get some sample books
                 sample_books = Book.objects.all()[:5]  # Get first 5 books
@@ -253,15 +253,15 @@ class UserLibraryViewSet(viewsets.ModelViewSet):
                                     'end_time': last_read
                                 }
                             )
-                            print(f"🔍 DEBUG: Created reading session for book '{book.title}' with {reading_time}min ({initial_progress}% progress)")
+                            print(f"DEBUG: Created reading session for book '{book.title}' with {reading_time}min ({initial_progress}% progress)")
                     
-                    print(f"🔍 DEBUG: Added book '{book.title}' to user library")
+                    print(f"DEBUG: Added book '{book.title}' to user library")
             except Exception as e:
-                print(f"🔍 DEBUG: Error adding sample books: {e}")
+                print(f"DEBUG: Error adding sample books: {e}")
             
             # Refresh the library count after adding books
             library_count = UserLibrary.objects.filter(user_id=user_id).count()
-            print(f"🔍 DEBUG: Updated user library count: {library_count}")
+            print(f"DEBUG: Updated user library count: {library_count}")
         
         # Get user's library
         queryset = self.get_queryset()
@@ -286,7 +286,7 @@ class UserLibraryViewSet(viewsets.ModelViewSet):
         
         try:
             book = Book.objects.get(id=book_id)
-            print(f"🔍 DEBUG: Adding book '{book.title}' to user {user_id} library")
+            print(f"DEBUG: Adding book '{book.title}' to user {user_id} library")
             
             library_entry, created = UserLibrary.objects.get_or_create(
                 user_id=user_id,
