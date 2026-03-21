@@ -5,17 +5,17 @@ from books.serializers import BookListSerializer
 
 class UserLibrarySerializer(serializers.ModelSerializer):
     book = BookListSerializer(read_only=True)
-    progress_percentage = serializers.SerializerMethodField()
+    reading_progress = serializers.SerializerMethodField()
     last_read = serializers.SerializerMethodField()
     
     class Meta:
         model = UserLibrary
         fields = [
             'id', 'book', 'purchase_date', 'access_expires', 'is_active',
-            'progress_percentage', 'last_read'
+            'reading_progress', 'last_read'
         ]
     
-    def get_progress_percentage(self, obj):
+    def get_reading_progress(self, obj):
         """Get reading progress for this book"""
         try:
             progress = ReadingProgress.objects.get(

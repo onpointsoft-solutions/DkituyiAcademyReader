@@ -34,11 +34,53 @@ class BookSerializer(serializers.ModelSerializer):
 
 class BookListSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source='author.name', read_only=True)
+    reading_progress = serializers.SerializerMethodField()
+    last_read = serializers.SerializerMethodField()
     
     class Meta:
         model = Book
         fields = ['id', 'title', 'subtitle', 'author_name', 'pages', 'language', 'rating', 
-                  'cover_url', 'created_at']
+                  'cover_url', 'created_at', 'reading_progress', 'last_read']
+    
+    def get_reading_progress(self, obj):
+        """Get reading progress for authenticated user"""
+        request = self.context.get('request')
+        if not request or not hasattr(request, 'user_payload'):
+            return 0.0
+        
+        user_id = request.user_payload.get('user_id')
+        if not user_id:
+            return 0.0
+        
+        try:
+            from library.models import ReadingProgress
+            progress = ReadingProgress.objects.get(
+                user_id=user_id, 
+                book=obj
+            )
+            return progress.progress_percentage
+        except ReadingProgress.DoesNotExist:
+            return 0.0
+    
+    def get_last_read(self, obj):
+        """Get last read date for authenticated user"""
+        request = self.context.get('request')
+        if not request or not hasattr(request, 'user_payload'):
+            return None
+        
+        user_id = request.user_payload.get('user_id')
+        if not user_id:
+            return None
+        
+        try:
+            from library.models import ReadingProgress
+            progress = ReadingProgress.objects.get(
+                user_id=user_id, 
+                book=obj
+            )
+            return progress.last_read
+        except ReadingProgress.DoesNotExist:
+            return None
 
 
 class BookReviewSerializer(serializers.ModelSerializer):

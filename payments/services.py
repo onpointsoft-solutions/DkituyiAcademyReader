@@ -8,10 +8,11 @@ from .models import PaystackPayment, Wallet, Transaction
 class PaystackService:
     """Paystack payment integration service"""
     
-    def __init__(self):
+    def __init__(self, simulation_mode=False):
         self.base_url = "https://api.paystack.co"
         self.secret_key = settings.PAYSTACK_SECRET_KEY
         self.callback_url = settings.PAYSTACK_CALLBACK_URL
+        self.simulation_mode = simulation_mode
         
     def initialize_transaction(self, email, amount, user_id, callback_url=None, metadata=None):
         """Initialize Paystack transaction"""
@@ -85,6 +86,52 @@ class PaystackService:
     
     def verify_transaction(self, reference):
         """Verify Paystack transaction"""
+        
+        # If in simulation mode, simulate successful verification
+        if self.simulation_mode:
+            print(f"🔍 DEBUG: SIMULATION MODE - Verifying transaction {reference}")
+            try:
+                paystack_payment = PaystackPayment.objects.get(reference=reference)
+                
+                # Simulate successful payment
+                paystack_payment.status = "completed"
+                paystack_payment.processed_at = timezone.now()
+                paystack_payment.response_data = {
+                    "status": True,
+                    "data": {
+                        "status": "success",
+                        "amount": paystack_payment.amount * 100,  # in kobo
+                        "reference": reference
+                    }
+                }
+                paystack_payment.save()
+                
+                # Add funds to wallet
+                wallet, created = Wallet.objects.get_or_create(
+                    user_id=paystack_payment.user_id,
+                    defaults={"balance": 0}
+                )
+                wallet.add_funds(paystack_payment.amount)
+                
+                # Create transaction record
+                Transaction.objects.create(
+                    user_id=paystack_payment.user_id,
+                    transaction_type="topup",
+                    amount=paystack_payment.amount,
+                    status="completed",
+                    description=f"SIMULATED Paystack top-up - {reference}",
+                    paystack_reference=reference
+                )
+                
+                return {"success": True, "message": "SIMULATION: Payment verified successfully"}
+                
+            except PaystackPayment.DoesNotExist:
+                return {"success": False, "error": "SIMULATION: Payment record not found"}
+            except Exception as e:
+                print(f"SIMULATION Error verifying transaction: {e}")
+                return {"success": False, "error": f"SIMULATION: {str(e)}"}
+        
+        # Normal verification flow
         headers = {
             "Authorization": f"Bearer {self.secret_key}",
             "Content-Type": "application/json"

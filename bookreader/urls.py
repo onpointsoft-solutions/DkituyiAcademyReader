@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from .admin import bookreader_admin
+from payments.urls import payment_callback
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,6 +15,7 @@ urlpatterns = [
     path('api/user/', include('library.user_urls')),  # Use user-specific URLs
     path('api/payments/', include('payments.urls')),  # Add payments endpoints
     path('api/reader/', include('reader.urls')),
+    path('payment/callback/', payment_callback, name='payment-callback'),  # Add callback route
 ]
 
 if settings.DEBUG:

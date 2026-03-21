@@ -107,6 +107,9 @@ class WalletViewSet(viewsets.ViewSet):
             )
         
         reference = request.data.get('reference')
+        simulation_mode = request.data.get('simulation_mode', False)
+        
+        print(f"🔍 DEBUG: Payment verification request - reference: {reference}, simulation_mode: {simulation_mode}")
         
         if not reference:
             return Response(
@@ -114,17 +117,18 @@ class WalletViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        paystack_service = PaystackService()
+        paystack_service = PaystackService(simulation_mode=simulation_mode)
         result = paystack_service.verify_transaction(reference)
         
         if result['success']:
             return Response({
-                'message': 'Payment verified successfully',
-                'wallet_balance': WalletService.get_balance(user_id)
+                'message': result['message'],
+                'wallet_balance': WalletService.get_balance(user_id),
+                'simulation_mode': simulation_mode
             })
         else:
             return Response(
-                {'error': result['message']}, 
+                {'error': result.get('error', result.get('message', 'Unknown error occurred'))}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
     
