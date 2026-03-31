@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/admin/', include('admin_api.urls')),
     path('api/books/', include('books.urls')),
     path('api/library/', include('library.urls')),
-    path('api/user/', include('library.user_urls')),  # Use user-specific URLs
+    path('api/user/', include('user_api.urls')),  # Use dedicated user API
     path('api/payments/', include('payments.urls')),  # Add payments endpoints
     path('api/reader/', include('reader.urls')),
     path('payment/callback/', payment_callback, name='payment-callback'),  # Add callback route
