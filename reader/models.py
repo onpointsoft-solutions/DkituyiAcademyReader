@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from books.models import Book
 
 User = get_user_model()
@@ -90,3 +91,45 @@ class ScreenshotWarning(models.Model):
     
     def __str__(self):
         return f"Screenshot warnings for User {self.user_id} - {self.book.title}"
+
+class PageCharge(models.Model):
+    """Track per-page charges for books"""
+    user_id = models.PositiveIntegerField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='page_charges')
+    page_number = models.PositiveIntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=4)  # Amount charged for this page
+    total_book_price = models.DecimalField(max_digits=10, decimal_places=2)  # Total book price
+    total_pages = models.PositiveIntegerField()  # Total pages in book
+    per_page_cost = models.DecimalField(max_digits=10, decimal_places=4)  # Cost per page
+    charged_at = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        unique_together = ['user_id', 'book', 'page_number']
+        ordering = ['page_number']
+        indexes = [
+            models.Index(fields=['user_id', 'book']),
+            models.Index(fields=['charged_at']),
+        ]
+    
+    def __str__(self):
+        return f"Page charge for {self.book.title} - Page {self.page_number} (${self.amount})"
+
+class UnlockedPage(models.Model):
+    """
+    Model to track unlocked pages for each user and book
+    """
+    user_id = models.PositiveIntegerField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='unlocked_pages')
+    page_number = models.PositiveIntegerField()
+    unlocked_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['user_id', 'book', 'page_number']
+        ordering = ['-unlocked_at']
+        indexes = [
+            models.Index(fields=['user_id', 'book']),
+            models.Index(fields=['user_id', 'book', 'page_number']),
+        ]
+    
+    def __str__(self):
+        return f"User {self.user_id} - {self.book.title} - Page {self.page_number}"

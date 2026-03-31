@@ -513,11 +513,20 @@ class UserRecentBooksViewSet(viewsets.ViewSet):
             # Calculate reading time for this book
             reading_time = progress.reading_time_minutes if progress else 0
             
+            # Calculate per-page cost
+            per_page_cost = 0.00
+            if not entry.book.is_free and entry.book.price > 0 and entry.book.pages > 0:
+                per_page_cost = round(float(entry.book.price) / entry.book.pages, 4)
+            
             book_data = {
                 'id': entry.book.id,
                 'title': entry.book.title,
                 'author_name': entry.book.author.name if entry.book.author else 'Unknown',
                 'cover_url': entry.book.cover_url,
+                'cover_display_url': entry.book.cover_image.url if entry.book.cover_image else entry.book.cover_url,
+                'price': float(entry.book.price) if entry.book.price else 0,
+                'is_free': entry.book.is_free,
+                'per_page_cost': per_page_cost,
                 'reading_progress': round(progress_percentage, 1),
                 'last_read': progress.last_read if progress else None,
                 'is_completed': progress.is_completed if progress else False,

@@ -55,8 +55,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'authentication.middleware_csrf.DisableCSRFMiddleware',  # Custom middleware to disable CSRF for auth endpoints
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'authentication.middleware_csrf.DisableCSRFMiddleware',
     'authentication.middleware.JWTAuthMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -65,6 +64,7 @@ MIDDLEWARE = [
 
 # Temporarily disable CSRF for debugging
 CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 
 ROOT_URLCONF = 'bookreader.urls'
@@ -134,7 +134,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # Allow unauthenticated access by default
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -143,6 +143,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_FORMAT_SUFFIX': None,
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
 # CORS settings
@@ -156,6 +157,22 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_ALL_HEADERS = True
 CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+CORS_PREFLIGHT_MAX_AGE = 86400  # 24 hours
+
+# Specific headers to allow
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-language',
+    'content-language',
+    'content-type',
+    'authorization',
+    'x-requested-with',
+    'accept-ranges',
+    'range',
+    'if-range',
+    'if-modified-since',
+    'if-none-match',
+]
 
 # CSRF Settings for admin API
 CSRF_TRUSTED_ORIGINS = config(

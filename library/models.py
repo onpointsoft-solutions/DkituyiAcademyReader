@@ -10,6 +10,7 @@ class UserLibrary(models.Model):
     purchase_date = models.DateTimeField(auto_now_add=True)
     access_expires = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    purchased = models.BooleanField(default=False)  # Track if book was purchased
     
     class Meta:
         unique_together = ['user_id', 'book']

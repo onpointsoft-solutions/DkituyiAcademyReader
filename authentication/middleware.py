@@ -15,14 +15,24 @@ class JWTAuthMiddleware(MiddlewareMixin):
     """
     
     def process_request(self, request):
-        # Skip authentication for certain paths
-        skip_paths = ['/admin/', '/api/auth/login/', '/api/auth/register/', '/api/auth/logout/', '/api/auth/me/', '/api/auth/wordpress-login/', '/api/reader/features/', '/api/reader/features/start_reading_session/', '/api/reader/features/get_annotations/', '/api/reader/features/add_bookmark/', '/api/reader/features/add_highlight/', '/api/reader/features/add_note/', '/api/reader/features/update_highlight/', '/api/reader/features/update_note/', '/api/reader/features/delete_bookmark/', '/api/reader/features/delete_highlight/', '/api/reader/features/delete_note/', '/api/reader/features/end_reading_session/', '/api/reader/features/report_screenshot_attempt/', '/api/reader/pdf/', '/api/reader/pdf/update_progress/']
+        # Skip authentication for certain paths (but not reader endpoints)
+        skip_paths = [
+            '/admin/', 
+            '/api/auth/login/', 
+            '/api/auth/register/', 
+            '/api/auth/logout/', 
+            '/api/auth/me/', 
+            '/api/auth/wordpress-login/',
+            '/api/books/public/',  # Skip authentication for public books endpoint
+        ]
         if any(request.path.startswith(path) for path in skip_paths):
             return None
             
-        # Debug logging for user and admin endpoints
-        if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
-            logger.info(f"🔍 {'User' if request.path.startswith('/api/user/') else 'Admin'} endpoint accessed: {request.path}")
+        # Debug logging for user, admin, and books endpoints
+        if (request.path.startswith('/api/user/') or 
+            request.path.startswith('/api/admin/') or 
+            request.path.startswith('/api/books/')):
+            logger.info(f"🔍 Endpoint accessed: {request.path}")
             logger.info(f"🔍 Authorization header: {request.headers.get('Authorization')}")
             
         # First check for Django session auth
@@ -48,7 +58,9 @@ class JWTAuthMiddleware(MiddlewareMixin):
                 )
                 
                 # Debug logging
-                if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
+                if (request.path.startswith('/api/user/') or 
+                    request.path.startswith('/api/admin/') or 
+                    request.path.startswith('/api/books/')):
                     print(f"DEBUG: JWT decoded successfully: {payload}")
                 
                 # Attach user payload to request
@@ -62,16 +74,21 @@ class JWTAuthMiddleware(MiddlewareMixin):
                     'is_superuser': False  # Will be checked in permission class
                 })()
                 
-                if request.path.startswith('/api/admin/'):
-                    print(f"DEBUG: JWT middleware set user object for admin endpoint")
+                if (request.path.startswith('/api/admin/') or 
+                    request.path.startswith('/api/books/')):
+                    print(f"DEBUG: JWT middleware set user object for {'admin' if request.path.startswith('/api/admin/') else 'books'} endpoint")
                     print(f"DEBUG: User object - id: {request.user.id}, email: {request.user.email}, authenticated: {request.user.is_authenticated}")
                 
             except jwt.ExpiredSignatureError:
-                if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
+                if (request.path.startswith('/api/user/') or 
+                    request.path.startswith('/api/admin/') or 
+                    request.path.startswith('/api/books/')):
                     print(f"DEBUG: JWT token expired")
                 return JsonResponse({'error': 'Token has expired'}, status=401)
             except jwt.InvalidTokenError:
-                if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
+                if (request.path.startswith('/api/user/') or 
+                    request.path.startswith('/api/admin/') or 
+                    request.path.startswith('/api/books/')):
                     print(f"DEBUG: Invalid JWT token")
                 return JsonResponse({'error': 'Invalid token'}, status=401)
             except Exception as e:
@@ -80,7 +97,9 @@ class JWTAuthMiddleware(MiddlewareMixin):
                 return JsonResponse({'error': 'Authentication failed'}, status=401)
         else:
             # No token provided
-            if request.path.startswith('/api/user/') or request.path.startswith('/api/admin/'):
+            if (request.path.startswith('/api/user/') or 
+                request.path.startswith('/api/admin/') or 
+                request.path.startswith('/api/books/')):
                 print(f"DEBUG: No JWT token provided")
             request.user_payload = None
             request.user = AnonymousUser()

@@ -39,6 +39,11 @@ class BookPreviewViewSet(viewsets.GenericViewSet):
             # Analyze content structure
             content_analysis = analyzer.analyze_content_structure(0, len(preview_pages))
             
+            # Calculate per-page cost
+            per_page_cost = 0.00
+            if not book.is_free and book.price > 0 and analyzer.total_pages > 0:
+                per_page_cost = round(float(book.price) / analyzer.total_pages, 4)
+            
             # Extract text from preview pages
             preview_text = ""
             for page_num in preview_pages:
@@ -58,6 +63,7 @@ class BookPreviewViewSet(viewsets.GenericViewSet):
                 'preview_page_numbers': preview_pages,
                 'preview_text': preview_text,
                 'preview_percentage': 20,
+                'per_page_cost': per_page_cost,
                 'cover_url': book.cover_url,
                 'description': book.description,
                 'requires_signup': True,
