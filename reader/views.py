@@ -32,7 +32,7 @@ def unlock_page(request):
     book_id     = request.data.get('book_id')
     page_number = request.data.get('page_number')
     #user_id=request.data.get('user_id')
-    print(f"🔍 DEBUG: Unlock request - user_id: {getattr(request, 'user_payload', {}).get('user_id')}, book_id: {book_id}, page_number: {page_number}")
+    print(f"just  DEBUG: Unlock request - user_id: {getattr(request, 'user_payload', {}).get('user_id')}, book_id: {book_id}, page_number: {page_number}")
     
     # TEMPORARILY DISABLE AUTH FOR TESTING
     # user = get_user_from_jwt(request)
@@ -46,14 +46,14 @@ def unlock_page(request):
 
     try:
         book = Book.objects.get(id=book_id)
-        print(f"🔍 DEBUG: Book found: {book.title}")
+        print(f"just  DEBUG: Book found: {book.title}")
     except Book.DoesNotExist:
-        print("🔍 DEBUG: Book not found")
+        print("just  DEBUG: Book not found")
         return Response({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
 
     # Check if user has library entry (purchased or free access)
     library_entry = UserLibrary.objects.filter(user_id=user.id, book=book).first()
-    print(f"🔍 DEBUG: Library entry: {library_entry}")
+    print(f"just  DEBUG: Library entry: {library_entry}")
     
     # Allow page unlocking if:
     # 1. Book is free, OR
@@ -64,18 +64,18 @@ def unlock_page(request):
         free_preview_pages = max(1, int(book.pages * 0.2))  # 20% free preview
     
     if not book.is_free and not library_entry and page_number > free_preview_pages:
-        print("🔍 DEBUG: No library entry and beyond free preview range")
+        print("just  DEBUG: No library entry and beyond free preview range")
         return Response(
             {'error': 'You must purchase this book first'},
             status=status.HTTP_403_FORBIDDEN,
         )
     
     if UnlockedPage.objects.filter(user_id=user.id, book=book, page_number=page_number).exists():
-        print("🔍 DEBUG: Page already unlocked")
+        print("just  DEBUG: Page already unlocked")
         return Response({'error': 'Page already unlocked'}, status=status.HTTP_400_BAD_REQUEST)
 
     wallet, _ = Wallet.objects.get_or_create(user_id=user.id)
-    print(f"🔍 DEBUG: Wallet: {wallet.balance} coins")
+    print(f"just  DEBUG: Wallet: {wallet.balance} coins")
     
     # Calculate per-page cost using same logic as serializers
     from decimal import Decimal
@@ -90,7 +90,7 @@ def unlock_page(request):
     else:
         page_cost = Decimal('10')  # Fallback for books without page count
     
-    print(f"🔍 DEBUG: Calculated page cost: {page_cost} coins (Book price: {book.price} KES, Pages: {book.pages})")
+    print(f"just  DEBUG: Calculated page cost: {page_cost} coins (Book price: {book.price} KES, Pages: {book.pages})")
 
     if wallet.balance < page_cost:
         return Response({'error': 'Insufficient balance'}, status=status.HTTP_402_PAYMENT_REQUIRED)

@@ -298,10 +298,10 @@ class UserLibraryViewSet(viewsets.ModelViewSet):
             )
             
             if created:
-                print(f"🔍 DEBUG: ✅ Book '{book.title}' successfully added to library!")
+                print(f"DEBUG: Book '{book.title}' successfully added to library!")
                 return Response(
                     {
-                        'message': f'📚 "{book.title}" has been added to your library!',
+                        'message': f'"{book.title}" has been added to your library!',
                         'book_title': book.title,
                         'book_id': book.id,
                         'author': book.author.name if book.author else 'Unknown',
@@ -310,10 +310,10 @@ class UserLibraryViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_201_CREATED
                 )
             else:
-                print(f"🔍 DEBUG: 📖 Book '{book.title}' already in library")
+                print(f"DEBUG: Book '{book.title}' already in library")
                 return Response(
                     {
-                        'message': f'📖 "{book.title}" is already in your library!',
+                        'message': f'"{book.title}" is already in your library!',
                         'book_title': book.title,
                         'book_id': book.id,
                         'author': book.author.name if book.author else 'Unknown',
@@ -323,7 +323,7 @@ class UserLibraryViewSet(viewsets.ModelViewSet):
                 )
         
         except Book.DoesNotExist:
-            print(f"🔍 DEBUG: ❌ Book with ID {book_id} not found")
+            print(f"DEBUG: Book with ID {book_id} not found")
             return Response(
                 {'error': 'Book not found'}, 
                 status=status.HTTP_404_NOT_FOUND
@@ -360,18 +360,18 @@ class UserStatsViewSet(viewsets.ViewSet):
     
     def list(self, request):
         """Get user's reading statistics"""
-        print(f"🔍 DEBUG: UserStatsViewSet.list called")
-        print(f"🔍 DEBUG: user_payload: {getattr(request, 'user_payload', 'None')}")
+        print(f"DEBUG: UserStatsViewSet.list called")
+        print(f"DEBUG: user_payload: {getattr(request, 'user_payload', 'None')}")
         
         user_id = request.user_payload.get('user_id') if request.user_payload else None
         if not user_id:
-            print(f"🔍 DEBUG: No user_id found in request")
+            print(f"DEBUG: No user_id found in request")
             return Response(
                 {'error': 'Authentication required'}, 
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
-        print(f"🔍 DEBUG: Getting stats for user_id: {user_id}")
+        print(f"DEBUG: Getting stats for user_id: {user_id}")
         
         # Get real user statistics
         try:
@@ -391,7 +391,7 @@ class UserStatsViewSet(viewsets.ViewSet):
             # Get reading streak (consecutive days with reading activity)
             # If no reading sessions exist, create them from reading progress data
             if not ReadingSession.objects.filter(user_id=user_id).exists():
-                print(f"🔍 DEBUG: No reading sessions found, creating from progress data")
+                print(f"DEBUG: No reading sessions found, creating from progress data")
                 for progress in progress_entries:
                     if progress.reading_time_minutes > 0 and progress.last_read:
                         # Create a reading session based on the progress data
@@ -406,7 +406,7 @@ class UserStatsViewSet(viewsets.ViewSet):
                                 'end_time': progress.last_read
                             }
                         )
-                        print(f"🔍 DEBUG: Created reading session for book {progress.book.title}")
+                        print(f" DEBUG: Created reading session for book {progress.book.title}")
             
             # Get last 30 days of reading sessions
             since = timezone.now() - timedelta(days=30)
@@ -454,11 +454,11 @@ class UserStatsViewSet(viewsets.ViewSet):
                 'totalReadingTimeMinutes': total_reading_time
             }
             
-            print(f"🔍 DEBUG: User stats calculated: {stats}")
+            print(f"DEBUG: User stats calculated: {stats}")
             return Response(stats)
             
         except Exception as e:
-            print(f"🔍 DEBUG: Error calculating stats: {str(e)}")
+            print(f"justDEBUG: Error calculating stats: {str(e)}")
             # Return default stats if calculation fails
             return Response({
                 'totalBooks': 0,
@@ -479,18 +479,18 @@ class UserRecentBooksViewSet(viewsets.ViewSet):
     
     def list(self, request):
         """Get user's recent books with reading progress"""
-        print(f"🔍 DEBUG: UserRecentBooksViewSet.list called")
-        print(f"🔍 DEBUG: user_payload: {getattr(request, 'user_payload', 'None')}")
+        print(f"justDEBUG: UserRecentBooksViewSet.list called")
+        print(f"justDEBUG: user_payload: {getattr(request, 'user_payload', 'None')}")
         
         user_id = request.user_payload.get('user_id') if request.user_payload else None
         if not user_id:
-            print(f"🔍 DEBUG: No user_id found in request")
+            print(f"justDEBUG: No user_id found in request")
             return Response(
                 {'error': 'Authentication required'}, 
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
-        print(f"🔍 DEBUG: Getting recent books for user_id: {user_id}")
+        print(f"justDEBUG: Getting recent books for user_id: {user_id}")
         
         # Get user's library with reading progress
         library_entries = UserLibrary.objects.filter(user_id=user_id, is_active=True)
@@ -544,7 +544,7 @@ class UserRecentBooksViewSet(viewsets.ViewSet):
             -x['reading_progress']  # Higher progress first if same date
         ), reverse=True)
         
-        print(f"🔍 DEBUG: Returning {len(recent_books)} recent books")
+        print(f"justDEBUG: Returning {len(recent_books)} recent books")
         return Response({'results': recent_books[:10]})  # Return top 10 recent books
 
 
@@ -640,7 +640,7 @@ class UserReadingProgressViewSet(viewsets.ViewSet):
                     defaults={'is_active': True}
                 )
             
-            print(f"🔍 DEBUG: Updated reading progress for user {user_id}, book {book.title}: {progress}%")
+            print(f"justDEBUG: Updated reading progress for user {user_id}, book {book.title}: {progress}%")
             
             return Response({
                 'message': 'Reading progress updated successfully',
@@ -654,7 +654,7 @@ class UserReadingProgressViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
-            print(f"🔍 DEBUG: Error updating reading progress: {str(e)}")
+            print(f"justDEBUG: Error updating reading progress: {str(e)}")
             return Response(
                 {'error': 'Failed to update reading progress'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

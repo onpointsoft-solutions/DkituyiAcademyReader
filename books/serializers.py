@@ -46,14 +46,14 @@ class BookSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         """Handle book creation with author and categories"""
-        print(f"🔍 DEBUG: BookSerializer.create called with data: {validated_data}")
+        print(f"DEBUG: BookSerializer.create called with data: {validated_data}")
         
         # Extract author name
         author_name = validated_data.pop('author', None)
         categories_data = validated_data.pop('categories', [])
         
-        print(f"🔍 DEBUG: Extracted author_name: {author_name}")
-        print(f"🔍 DEBUG: Extracted categories: {categories_data}")
+        print(f"DEBUG: Extracted author_name: {author_name}")
+        print(f"DEBUG: Extracted categories: {categories_data}")
         
         # Create or get author
         if author_name:
@@ -62,7 +62,7 @@ class BookSerializer(serializers.ModelSerializer):
                 defaults={'bio': ''}
             )
             validated_data['author'] = author
-            print(f"🔍 DEBUG: Author created/updated: {author.name}, created: {created}")
+            print(f"DEBUG: Author created/updated: {author.name}, created: {created}")
         
         # Extract PDF metadata if file is provided
         pdf_file = validated_data.get('pdf_file')
@@ -84,9 +84,9 @@ class BookSerializer(serializers.ModelSerializer):
                 logger.warning(f"Could not extract PDF metadata: {e}")
         
         # Create book
-        print(f"🔍 DEBUG: Creating book with data: {validated_data}")
+        print(f"DEBUG: Creating book with data: {validated_data}")
         book = Book.objects.create(**validated_data)
-        print(f"🔍 DEBUG: Book created successfully: {book.id} - {book.title}")
+        print(f"DEBUG: Book created successfully: {book.id} - {book.title}")
         
         # Handle categories
         if categories_data:
@@ -96,7 +96,7 @@ class BookSerializer(serializers.ModelSerializer):
                     defaults={'description': ''}
                 )
                 book.categories.add(category)
-                print(f"🔍 DEBUG: Added category: {category.name}, created: {created}")
+                print(f"DEBUG: Added category: {category.name}, created: {created}")
         
         # Auto-add book to admin user's library for testing
         try:
@@ -125,11 +125,11 @@ class BookSerializer(serializers.ModelSerializer):
                     }
                 )
                 
-                logger.info(f"✅ Book '{book.title}' added to admin library with progress tracking")
+                logger.info(f"Book '{book.title}' added to admin library with progress tracking")
         except Exception as e:
             logger.warning(f"Could not add book to admin library: {e}")
         
-        print(f"🔍 DEBUG: BookSerializer.create completed successfully")
+        print(f"DEBUG: BookSerializer.create completed successfully")
         return book
     
     class Meta:

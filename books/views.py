@@ -25,19 +25,19 @@ class IsJWTAuthenticated(BasePermission):
     Custom permission class that works with JWT middleware
     """
     def has_permission(self, request, view):
-        print(f"🔍 DEBUG: IsJWTAuthenticated.has_permission called for {request.path}")
-        print(f"🔍 DEBUG: hasattr(request, 'user_payload'): {hasattr(request, 'user_payload')}")
-        print(f"🔍 DEBUG: request.user_payload: {getattr(request, 'user_payload', None)}")
+        print(f"DEBUG: IsJWTAuthenticated.has_permission called for {request.path}")
+        print(f"DEBUG: hasattr(request, 'user_payload'): {hasattr(request, 'user_payload')}")
+        print(f"DEBUG: request.user_payload: {getattr(request, 'user_payload', None)}")
         
         # Check if JWT middleware has set user_payload
         if hasattr(request, 'user_payload') and request.user_payload:
-            print(f"🔍 DEBUG: JWT authentication passed")
+            print(f"DEBUG: JWT authentication passed")
             return True
         
         # Fallback to standard Django authentication
         has_user = hasattr(request, 'user')
         is_auth = has_user and hasattr(request.user, 'is_authenticated') and request.user.is_authenticated
-        print(f"🔍 DEBUG: Django authentication - has_user: {has_user}, is_auth: {is_auth}")
+        print(f"DEBUG: Django authentication - has_user: {has_user}, is_auth: {is_auth}")
         
         return is_auth
 
@@ -58,21 +58,21 @@ class BookViewSet(viewsets.ModelViewSet):
         """
         Override dispatch to handle JWT authentication before permission checks
         """
-        print(f"🔍 DEBUG: BookViewSet.dispatch called for {request.method} {request.path}")
-        print(f"🔍 DEBUG: hasattr(request, 'user_payload'): {hasattr(request, 'user_payload')}")
+        print(f"DEBUG: BookViewSet.dispatch called for {request.method} {request.path}")
+        print(f"DEBUG: hasattr(request, 'user_payload'): {hasattr(request, 'user_payload')}")
         
         # Check if user is authenticated via JWT
         if hasattr(request, 'user_payload') and request.user_payload:
-            print(f"🔍 DEBUG: User is authenticated via JWT, proceeding with request")
+            print(f"DEBUG: User is authenticated via JWT, proceeding with request")
             return super().dispatch(request, *args, **kwargs)
         
         # If not authenticated, check if this is a read-only action
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
-            print(f"🔍 DEBUG: Allowing read-only request without authentication")
+            print(f"DEBUG: Allowing read-only request without authentication")
             return super().dispatch(request, *args, **kwargs)
         
         # For write operations, require authentication
-        print(f"🔍 DEBUG: Authentication required for {request.method} request")
+        print(f"DEBUG: Authentication required for {request.method} request")
         from rest_framework.exceptions import AuthenticationFailed
         raise AuthenticationFailed("Authentication required")
     
@@ -80,18 +80,18 @@ class BookViewSet(viewsets.ModelViewSet):
         """
         Admin users can create books, all authenticated users can read
         """
-        print(f"🔍 DEBUG: BookViewSet.get_permissions called for action: {self.action}")
+        print(f"DEBUG: BookViewSet.get_permissions called for action: {self.action}")
         
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [IsStaffUser]
-            print(f"🔍 DEBUG: Using IsStaffUser permission for admin action: {self.action}")
+            print(f"DEBUG: Using IsStaffUser permission for admin action: {self.action}")
         else:
             # Use a custom permission that works with JWT
             permission_classes = [IsJWTAuthenticated]
-            print(f"🔍 DEBUG: Using IsJWTAuthenticated permission for read action: {self.action}")
+            print(f"DEBUG: Using IsJWTAuthenticated permission for read action: {self.action}")
         
         permissions = [permission() for permission in permission_classes]
-        print(f"🔍 DEBUG: Permission classes: {[p.__class__.__name__ for p in permissions]}")
+        print(f"DEBUG: Permission classes: {[p.__class__.__name__ for p in permissions]}")
         return permissions
 
     def get_serializer_class(self):
@@ -106,25 +106,25 @@ class BookViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """Create a new book instance."""
-        print(f"🔍 DEBUG: BookViewSet.create called")
-        print(f"🔍 DEBUG: Request data: {request.data}")
-        print(f"🔍 DEBUG: Request files: {request.FILES}")
+        print(f"DEBUG: BookViewSet.create called")
+        print(f"DEBUG: Request data: {request.data}")
+        print(f"DEBUG: Request files: {request.FILES}")
         
         serializer = self.get_serializer(data=request.data)
-        print(f"🔍 DEBUG: Serializer created: {serializer.__class__.__name__}")
-        print(f"🔍 DEBUG: Serializer is_valid: {serializer.is_valid()}")
+        print(f"DEBUG: Serializer created: {serializer.__class__.__name__}")
+        print(f"DEBUG: Serializer is_valid: {serializer.is_valid()}")
         
         if not serializer.is_valid():
-            print(f"🔍 DEBUG: Serializer errors: {serializer.errors}")
+            print(f"DEBUG: Serializer errors: {serializer.errors}")
             from rest_framework.response import Response
             from rest_framework import status
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        print(f"🔍 DEBUG: Serializer validated, calling save()")
+        print(f"DEBUG: Serializer validated, calling save()")
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         
-        print(f"🔍 DEBUG: Book created successfully, returning response")
+        print(f"DEBUG: Book created successfully, returning response")
         from rest_framework.response import Response
         from rest_framework import status
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -465,10 +465,10 @@ class BookProgressView(APIView):
 @api_view(['GET'])
 def test_public_books(request):
     """Test endpoint for public books access"""
-    print(f"🔍 DEBUG: test_public_books called for {request.path}")
-    print(f"🔍 DEBUG: Request method: {request.method}")
-    print(f"🔍 DEBUG: Request user: {getattr(request, 'user', 'No user')}")
-    print(f"🔍 DEBUG: Request user_payload: {getattr(request, 'user_payload', 'No user_payload')}")
+    print(f"just DEBUG: test_public_books called for {request.path}")
+    print(f"just DEBUG: Request method: {request.method}")
+    print(f"just DEBUG: Request user: {getattr(request, 'user', 'No user')}")
+    print(f"just DEBUG: Request user_payload: {getattr(request, 'user_payload', 'No user_payload')}")
     
     from .models import Book
     books = Book.objects.all()[:5]  # Limit to 5 for testing
