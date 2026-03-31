@@ -45,6 +45,7 @@ LOCAL_APPS = [
     'library',
     'reader',
     'admin_api',
+    'user_api',
     'payments',  # Updated to payments app
 ]
 
