@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Get allowed hosts from environment or use default with production domain
 env_hosts = config('ALLOWED_HOSTS', default='', cast=str)
@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://onlinereader.dkituyiacademy.org,https://dkituyiacademy.org,https://app.example.com',
+    default='https://ebooks.dkituyiacademy.org,https://dkituyiacademy.org',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -178,7 +178,7 @@ CORS_ALLOW_HEADERS = [
 # CSRF Settings for admin API
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='https://onlinereader.dkituyiacademy.org,https://dkituyiacademy.org,https://app.example.com',
+    default='https://ebooks.dkituyiacademy.org,https://dkituyiacademy.org',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -196,9 +196,9 @@ WOOCOMMERCE_CONSUMER_SECRET = config('WOOCOMMERCE_CONSUMER_SECRET', default='')
 # Paystack Payment Integration
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='https://onlinereader.dkituyiacademy.org/payment/callback')
+PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='https://ebooks.dkituyiacademy.org/payment/callback')
 PAYSTACK_WEBHOOK_SECRET = config('PAYSTACK_WEBHOOK_SECRET', default='your-webhook-secret-key')
-FRONTEND_URL = config('FRONTEND_URL', default='https://onlinereader.dkituyiacademy.org')
+FRONTEND_URL = config('FRONTEND_URL', default='https://ebooks.dkituyiacademy.org')
 
 # File Upload Settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50MB
@@ -239,23 +239,17 @@ SUBSCRIPTION_WEEKLY = 99
 SUBSCRIPTION_MONTHLY = 299
 SUBSCRIPTION_PREMIUM = 499
 
-# Security Settings
+# Production Security Settings
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
-SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True if not DEBUG else False
-SECURE_HSTS_PRELOAD = True if not DEBUG else False
-
-# Temporarily disable SSL security for development
-SECURE_SSL_REDIRECT = False
-SECURE_PROXY_SSL_HEADER = False
-
-# Session Settings
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # Rate Limiting
 RATELIMIT_ENABLE = True
