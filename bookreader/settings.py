@@ -142,7 +142,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 50,
     'DEFAULT_FORMAT_SUFFIX': None,
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,https://app.example.com,https://reader.dkituyiacademy.org',
+    default='https://onlinereader.dkituyiacademy.org,https://dkituyiacademy.org,https://app.example.com',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -178,7 +178,7 @@ CORS_ALLOW_HEADERS = [
 # CSRF Settings for admin API
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='http://localhost:3000,https://app.example.com,https://reader.dkituyiacademy.org',
+    default='https://onlinereader.dkituyiacademy.org,https://dkituyiacademy.org,https://app.example.com',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -196,9 +196,9 @@ WOOCOMMERCE_CONSUMER_SECRET = config('WOOCOMMERCE_CONSUMER_SECRET', default='')
 # Paystack Payment Integration
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='http://localhost:3000/payment/callback')
+PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='https://onlinereader.dkituyiacademy.org/payment/callback')
 PAYSTACK_WEBHOOK_SECRET = config('PAYSTACK_WEBHOOK_SECRET', default='your-webhook-secret-key')
-FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+FRONTEND_URL = config('FRONTEND_URL', default='https://onlinereader.dkituyiacademy.org')
 
 # File Upload Settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50MB
