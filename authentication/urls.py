@@ -3,6 +3,9 @@ from . import views
 from . import views_django
 
 urlpatterns = [
+    # CSRF token endpoint
+    path('csrf/', views_django.get_csrf_token, name='get-csrf-token'),
+    
     # JWT endpoints (for WordPress integration)
     path('verify/', views.verify_token, name='verify-token'),
     path('user/', views.user_info, name='user-info'),

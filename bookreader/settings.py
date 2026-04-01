@@ -56,17 +56,18 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'authentication.middleware_csrf.DisableCSRFMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'authentication.middleware.JWTAuthMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Temporarily disable CSRF for debugging
-CSRF_COOKIE_SECURE = False
+# CSRF Settings for production
+CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 ROOT_URLCONF = 'bookreader.urls'
 

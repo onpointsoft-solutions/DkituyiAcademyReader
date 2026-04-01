@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.utils import timezone
+from django.middleware.csrf import get_token
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -11,6 +12,19 @@ from rest_framework.views import APIView
 from rest_framework.serializers import Serializer
 import jwt
 from django.conf import settings
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    """
+    Get CSRF token for frontend forms
+    """
+    csrf_token = get_token(request)
+    return Response({
+        'csrfToken': csrf_token
+    })
 
 
 class UserSerializer(Serializer):
